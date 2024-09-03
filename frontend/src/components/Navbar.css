@@ -1,0 +1,36 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #343a40;
+    cursor: url("../cola.png"),auto;
+  }
+  
+  .navbar-brand h1 {
+    color: #ffc107;
+  }
+  
+  .navbar ul {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+  }
+  
+  .navbar li a ,.lg{
+    color: #ffffff;
+    font-weight: bold;
+    transition: color 0.3s ease;
+  }
+  
+  .navbar li a:hover {
+    color: #ffc107;
+  }
+  .lg:hover{
+    color: #ffc107;
+  }
+  .ham{
+    height:30px;
+    width:30px;
+    top: 100px;
+  }

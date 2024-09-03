@@ -1,0 +1,31 @@
+.home {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-image: url('https://files.oaiusercontent.com/file-rPi3pMXlv5wx5p5gpTE8ZIsb?se=2024-08-30T13%3A12%3A06Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3D789bfcdb-0010-4b92-89a6-b42602bf57e1.webp&sig=3AEV/smtSXPjgsePRwabyQEopzjrPI21J7w8T5JmUJk%3D'); 
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.hero {
+  background-color: rgba(0, 0, 0, 0.5); 
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+.hero-content {
+  color: white;
+  text-align: center;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.5rem;
+}

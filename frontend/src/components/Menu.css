@@ -1,0 +1,76 @@
+.menu {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  width: 200vh;
+}
+
+.menu h1 {
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+  gap: 2rem; 
+  justify-items: center; 
+}
+
+.menu-card {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  width: 100%; 
+  max-width: 300px;
+}
+
+.menu-card:hover {
+  transform: translateY(-5px);
+}
+
+.menu-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.menu-details {
+  padding: 1rem;
+  text-align: left;
+}
+
+.menu-details h3 {
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.menu-details p {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+.menu-details button {
+  background-color: #ffc107;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #343a40;
+  cursor: url(../pizza.png),auto;
+  transition: background-color 0.3s ease;
+}
+
+.menu-details button:hover {
+  background-color: #e0a800;
+}
+.menu-search-input{
+  background-image: url("../search.png");
+  background-repeat: no-repeat;
+  padding-left: 50px;
+  
+}
