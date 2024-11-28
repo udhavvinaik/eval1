@@ -12,9 +12,9 @@ cartRouter.get("/", async (req, res) => {
 });
 
 cartRouter.post("/add", async (req, res) => {
-    const { name, price} = req.body;
+    const { name, price,img} = req.body;
     try {
-        const newItem = new CartModel({ name,price});
+        const newItem = new CartModel({ name,price,img});
         await newItem.save();
         res.send("item added to cart");
     } catch (error) {

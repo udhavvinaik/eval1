@@ -4,6 +4,7 @@ const cors = require("cors");
 const restaurantRouter = require("./routes/restaurantRouter");
 const cartRouter = require("./routes/cartRouter");
 const userRouter = require("./routes/userRouter");
+const orderRouter = require("./routes/orderRouter");
 const app = express();
 const PORT = 5000;
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use("/restaurants",restaurantRouter);
 app.use("/cart",cartRouter);
 app.use("/users",userRouter);
+app.use("/orders",orderRouter);
 app.listen(PORT, async() => {
     try{
         await mongoose;

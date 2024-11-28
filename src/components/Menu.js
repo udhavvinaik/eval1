@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Menu.css';
+
 const Menu = () => {
   const [menuItems, setMenuItems] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredMenuItems, setFilteredMenuItems] = useState([]);
+  const [selectedRating, setSelectedRating] = useState(0);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(1000);
 
   useEffect(() => {
     const fetchMenu = async () => {
@@ -20,11 +24,53 @@ const Menu = () => {
     fetchMenu();
   }, []);
 
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    filterMenuItems(e.target.value, selectedRating, minPrice, maxPrice); 
+  };
+
+
+  const handleRatingChange = (e) => {
+    setSelectedRating(Number(e.target.value));
+    filterMenuItems(searchQuery, Number(e.target.value), minPrice, maxPrice);
+  };
+
+
+  const handlePriceChange = (e) => {
+    if (e.target.name === 'minPrice') {
+      setMinPrice(Number(e.target.value));
+    } else if (e.target.name === 'maxPrice') {
+      setMaxPrice(Number(e.target.value));
+    }
+    filterMenuItems(searchQuery, selectedRating, minPrice, maxPrice);
+  };
+
+
+  const filterMenuItems = (query, rating, minPrice, maxPrice) => {
+    let filtered = menuItems;
+
+
+    if (rating > 0) {
+      filtered = filtered.filter(item => item.rating >= rating);
+    }
+
+    filtered = filtered.filter(item => item.price >= minPrice && item.price <= maxPrice);
+
+
+    if (query) {
+      filtered = filtered.filter(item => item.name.toLowerCase().includes(query.toLowerCase()));
+    }
+
+    setFilteredMenuItems(filtered);
+  };
+
   const addToCart = async (item) => {
     try {
       await axios.post('http://localhost:5000/cart/add', {
         name: item.name,
-        price: item.price
+        price: item.price,
+        img: item.image
       });
       alert(`${item.name} added to cart`);
     } catch (error) {
@@ -32,26 +78,44 @@ const Menu = () => {
     }
   };
 
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-    filterMenuItems(e.target.value);
-  };
-
-  const filterMenuItems = (query) => {
-    if (!query) {
-      setFilteredMenuItems(menuItems);
-    } else {
-      const filteredItems = menuItems.filter((item) =>
-        item.name.toLowerCase().includes(query.toLowerCase())
-      );
-      setFilteredMenuItems(filteredItems);
-    }
-  };
-
   return (
     <div className="menu">
+
+      <div className="filter-container">
+        <label htmlFor="rating">Filter by Rating: </label>
+        <select id="rating" onChange={handleRatingChange}>
+          <option value="0">All</option>
+          <option value="1">1 Star and above</option>
+          <option value="2">2 Stars and above</option>
+          <option value="3">3 Stars and above</option>
+          <option value="4">4 Stars and above</option>
+          <option value="5">5 Stars</option>
+        </select>
+      </div>
+
+      <div className="filter-container">
+        <label htmlFor="minPrice">Min Price: ₹</label>
+        <input
+          type="number"
+          name="minPrice"
+          id="minPrice"
+          value={minPrice}
+          onChange={handlePriceChange}
+          min="0"
+        />
+        <label htmlFor="maxPrice">Max Price: ₹</label>
+        <input
+          type="number"
+          name="maxPrice"
+          id="maxPrice"
+          value={maxPrice}
+          onChange={handlePriceChange}
+          min="0"
+        />
+      </div>
+
+
       <input
-      
         type="text"
         placeholder="Search menu..."
         value={searchQuery}
@@ -61,17 +125,21 @@ const Menu = () => {
 
       <h1>Menu</h1>
       <div className="menu-grid">
-        {filteredMenuItems.map(item => (
-          <div className="menu-card" key={item._id}>
-            <img src={item.image} alt={item.name} className="menu-image" />
-            <div className="menu-details">
-              <h3>{item.name}</h3>
-              <p>Price: ₹{item.price}</p>
-              <p>Rating: {item.rating} ⭐</p>
-              <button onClick={() => addToCart(item)}>Add to Cart</button>
+        {filteredMenuItems.length === 0 ? (
+          <p>No restaurants found with the selected filter.</p>
+        ) : (
+          filteredMenuItems.map(item => (
+            <div className="menu-card" key={item._id}>
+              <img src={item.image} alt={item.name} className="menu-image" />
+              <div className="menu-details">
+                <h3>{item.name}</h3>
+                <p>Price: ₹{item.price}</p>
+                <p>Rating: {item.rating} ⭐</p>
+                <button onClick={() => addToCart(item)}>Add to Cart</button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

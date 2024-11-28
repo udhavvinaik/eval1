@@ -6,18 +6,29 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const userDetails = sessionStorage.getItem('userDetails');
+    if (userDetails) {
+      setUser(JSON.parse(userDetails));
+    }
+  }, []);
+
+
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const response = await axios.get('http://localhost:5000/cart');
         setCartItems(response.data);
       } catch (error) {
-        console.error(error);
+        console.error('Failed to fetch cart items:', error);
       }
     };
 
     fetchCart();
   }, []);
+
 
   useEffect(() => {
     const calculateTotalPrice = () => {
@@ -28,23 +39,40 @@ const Cart = () => {
     calculateTotalPrice();
   }, [cartItems]);
 
+
   const removeFromCart = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/cart/delete/${id}`);
       setCartItems(cartItems.filter(item => item._id !== id));
     } catch (error) {
-      console.error(error);
+      console.error('Failed to remove item:', error);
     }
   };
 
-  const removeAll = async () => {
+
+  const placeOrder = async () => {
     try {
-      await axios.delete(`http://localhost:5000/cart/deleteAll`);
+      
+      const order = {
+        customerName: user.name,
+        dishes: cartItems.map(item => ({
+          name: item.name,
+          price: item.price,
+          image: item.image,
+        })),
+      };
+
+
+      await axios.post('http://localhost:5000/orders/add', order);
+
+
+      await axios.delete('http://localhost:5000/cart/deleteAll');
       setCartItems([]);
       setTotalPrice(0);
-      alert("Successfully placed order");
+
+      alert('Order placed successfully!');
     } catch (error) {
-      console.error(error);
+      console.error('Failed to place order:', error);
     }
   };
 
@@ -67,7 +95,11 @@ const Cart = () => {
         )}
       </div>
 
-      <button onClick={removeAll}>CheckOut: ₹{totalPrice.toFixed(2)}</button>
+      {cartItems.length > 0 && (
+        <button className="checkout-button" onClick={placeOrder}>
+          Check Out: ₹{totalPrice.toFixed(2)}
+        </button>
+      )}
     </div>
   );
 };
