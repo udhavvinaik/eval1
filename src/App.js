@@ -8,7 +8,6 @@ import Login from './components/Login';
 import Signup from './components/Signup';
 import Profile from './components/Profile';
 import Admin from './components/Admin';
-
 const App = () => {
 
 
@@ -29,7 +28,7 @@ const ProtectedRoute = ({ children }) => {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/admin" element={<Admin/>} />
+          <Route path="/admin" element={<ProtectedRoute><Admin/></ProtectedRoute>} />
         </Routes>
       </Layout>
     </Router>

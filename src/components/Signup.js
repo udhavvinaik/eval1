@@ -2,6 +2,8 @@ import React from 'react'
 import axios from 'axios';
 import {useState } from 'react';
 import { Link,Navigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./login.css"
 export default function Signup() {
     const [formData, setFormData] = useState({ name: '', email: '', password: '' });
@@ -14,11 +16,11 @@ export default function Signup() {
         e.preventDefault();
         try {
             await axios.post('http://localhost:5000/users/signup',formData);
-            alert("successfully signed up");
-            alert("you can now proceed to login");
+            toast.success("successfully signed up");
+            toast.success("you can now proceed to login");
             Navigate("/login");
         }catch (error) {
-            console.error(error);
+            toast.error(error);
         }
     };
 
@@ -37,6 +39,17 @@ export default function Signup() {
           Already have an account? <Link to="/login">Login</Link>
         </p>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   )
 }

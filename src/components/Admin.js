@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './AdminPage.css';
 
 const AdminPage = () => {
@@ -48,14 +50,14 @@ const AdminPage = () => {
   const handleAddDish = async () => {
     try {
       await axios.post('http://localhost:5000/restaurants/publish', newDish);
-      alert('Dish added successfully!');
+      toast.success('Dish added successfully!');
       setNewDish({ name: '', image: '', price: '', rating: '' }); 
       
       const response = await axios.get('http://localhost:5000/restaurants');
       setDishes(response.data);
     } catch (error) {
       console.error('Error adding dish:', error);
-      alert('Failed to add dish!');
+      toast.error('Failed to add dish!');
     }
   };
 
@@ -63,13 +65,13 @@ const AdminPage = () => {
   const handleDeleteDish = async (id) => {
     try {
       await axios.delete(`http://localhost:5000/restaurants/delete/${id}`);
-      alert('Dish deleted successfully!');
+      toast.success('Dish deleted successfully!');
       
       const response = await axios.get('http://localhost:5000/restaurants');
       setDishes(response.data);
     } catch (error) {
       console.error('Error deleting dish:', error);
-      alert('Failed to delete dish!');
+      toast.error('Failed to delete dish!');
     }
   };
 
@@ -78,9 +80,9 @@ const AdminPage = () => {
     try {
       await axios.delete(`http://localhost:5000/orders/${id}`);
       setOrders(orders.filter(order => order._id !== id));
-      alert('Order marked as prepared and deleted successfully!');
+      toast.success('Order marked as prepared and deleted successfully!');
     } catch (error) {
-      console.error('Error deleting order:', error);
+      toast.error('Error deleting order:', error);
     }
   };
 
@@ -125,6 +127,7 @@ const AdminPage = () => {
         <div className="menu-list">
           {dishes.map(dish => (
             <div key={dish._id} className="menu-item">
+            <img src={dish.image} alt={dish.name} className="menu-image" />
               <h3>{dish.name}</h3>
               <p>Price: ₹{dish.price}</p>
               <button onClick={() => handleDeleteDish(dish._id)}>Delete</button>
@@ -138,8 +141,9 @@ const AdminPage = () => {
         <div className="orders-list">
           {orders.map(order => (
             <div key={order._id} className="order-card">
-              <h3>Order by: {order.customerName}</h3>
-              <p>Dishes:</p>
+              <h3><b>Order by: </b>{order.customerName}</h3>
+              <h3><b>Delivery address:</b> {order.deliveryAddress.address}, {order.deliveryAddress.city}, {order.deliveryAddress.pincode}</h3>
+              <p><b>Dishes:</b></p>
               <ul>
                 {order.dishes.map((dish, index) => (
                   <li key={index}>{dish.name} - ₹{dish.price}</li>
@@ -150,6 +154,17 @@ const AdminPage = () => {
           ))}
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

@@ -20,11 +20,18 @@ const OrderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  dishes: [DishSchema],
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  deliveryAddress: {
+    name: { type: String, required: true },
+    address: { type: String, required: true },
+    phone: { type: String, required: true },
+    city: { type: String, required: true },
+    pincode: { type: String, required: true },
   },
+  dishes: [DishSchema],
+  totalPrice:{
+    type: Number
+  }
+  
 });
 
 const Order = mongoose.model('Order', OrderSchema);

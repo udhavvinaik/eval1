@@ -2,6 +2,8 @@ import React from 'react'
 import axios from 'axios';
 import {useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./login.css";
 export default function Login() {
 
@@ -16,10 +18,10 @@ export default function Login() {
         try {
             const res = await axios.post('http://localhost:5000/users/login',formData);
             sessionStorage.setItem('userDetails', JSON.stringify(res.data));
-            alert('Logged in successfully');
+            toast.success('Logged in successfully');
             navigate("/");
         } catch (error) {
-            console.error(error);
+            toast.error(error);
         }
     };
 
@@ -36,6 +38,17 @@ export default function Login() {
           Don't have an account? <Link to="/signup">Sign Up</Link>
         </p>
       </div>
+      <ToastContainer
+      position="top-right"
+      autoClose={5000}
+      hideProgressBar={false}
+      newestOnTop={false}
+      closeOnClick
+      rtl={false}
+      pauseOnFocusLoss
+      draggable
+      pauseOnHover
+    />
     </div>
   )
 }

@@ -15,7 +15,7 @@ Orderrouter.get('/', async (req, res) => {
 
 Orderrouter.post('/add', async (req, res) => {
   try {
-    const { customerName, dishes } = req.body;
+    const { customerName,deliveryAddress, dishes,totalPrice } = req.body;
 
     if (!customerName || !Array.isArray(dishes) || dishes.length === 0) {
       return res.status(400).json({ error: 'Invalid input data' });
@@ -23,7 +23,9 @@ Orderrouter.post('/add', async (req, res) => {
 
     const newOrder = new Order({
       customerName,
+      deliveryAddress,
       dishes,
+      totalPrice
     });
 
     await newOrder.save();

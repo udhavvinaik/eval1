@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Menu.css';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useInView } from 'react-intersection-observer';
 
 const Menu = () => {
   const [menuItems, setMenuItems] = useState([]);
@@ -15,7 +18,7 @@ const Menu = () => {
       try {
         const response = await axios.get('http://localhost:5000/restaurants');
         setMenuItems(response.data);
-        setFilteredMenuItems(response.data); 
+        setFilteredMenuItems(response.data);
       } catch (error) {
         console.error(error);
       }
@@ -24,18 +27,15 @@ const Menu = () => {
     fetchMenu();
   }, []);
 
-
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-    filterMenuItems(e.target.value, selectedRating, minPrice, maxPrice); 
+    filterMenuItems(e.target.value, selectedRating, minPrice, maxPrice);
   };
-
 
   const handleRatingChange = (e) => {
     setSelectedRating(Number(e.target.value));
     filterMenuItems(searchQuery, Number(e.target.value), minPrice, maxPrice);
   };
-
 
   const handlePriceChange = (e) => {
     if (e.target.name === 'minPrice') {
@@ -46,20 +46,17 @@ const Menu = () => {
     filterMenuItems(searchQuery, selectedRating, minPrice, maxPrice);
   };
 
-
   const filterMenuItems = (query, rating, minPrice, maxPrice) => {
     let filtered = menuItems;
 
-
     if (rating > 0) {
-      filtered = filtered.filter(item => item.rating >= rating);
+      filtered = filtered.filter((item) => item.rating >= rating);
     }
 
-    filtered = filtered.filter(item => item.price >= minPrice && item.price <= maxPrice);
-
+    filtered = filtered.filter((item) => item.price >= minPrice && item.price <= maxPrice);
 
     if (query) {
-      filtered = filtered.filter(item => item.name.toLowerCase().includes(query.toLowerCase()));
+      filtered = filtered.filter((item) => item.name.toLowerCase().includes(query.toLowerCase()));
     }
 
     setFilteredMenuItems(filtered);
@@ -70,17 +67,36 @@ const Menu = () => {
       await axios.post('http://localhost:5000/cart/add', {
         name: item.name,
         price: item.price,
-        img: item.image
+        img: item.image,
       });
-      alert(`${item.name} added to cart`);
+      toast.success(`${item.name} added to cart`);
     } catch (error) {
       console.error(error);
     }
   };
 
+  const MenuCard = ({ item }) => {
+    const { ref, inView } = useInView({ triggerOnce: true });
+
+    return (
+      <div className={`menu-card ${inView ? 'visible' : ''}`} ref={ref}>
+        <div className="menu-card-inner">
+          <div className="menu-card-front">
+            <img src={item.image} alt={item.name} className="menu-image" />
+            <h3>{item.name}</h3>
+          </div>
+          <div className="menu-card-back">
+            <p>Price: ₹{item.price}</p>
+            <p>Rating: {item.rating} ⭐</p>
+            <button onClick={() => addToCart(item)}>Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="menu">
-
       <div className="filter-container">
         <label htmlFor="rating">Filter by Rating: </label>
         <select id="rating" onChange={handleRatingChange}>
@@ -114,7 +130,6 @@ const Menu = () => {
         />
       </div>
 
-
       <input
         type="text"
         placeholder="Search menu..."
@@ -128,19 +143,20 @@ const Menu = () => {
         {filteredMenuItems.length === 0 ? (
           <p>No restaurants found with the selected filter.</p>
         ) : (
-          filteredMenuItems.map(item => (
-            <div className="menu-card" key={item._id}>
-              <img src={item.image} alt={item.name} className="menu-image" />
-              <div className="menu-details">
-                <h3>{item.name}</h3>
-                <p>Price: ₹{item.price}</p>
-                <p>Rating: {item.rating} ⭐</p>
-                <button onClick={() => addToCart(item)}>Add to Cart</button>
-              </div>
-            </div>
-          ))
+          filteredMenuItems.map((item) => <MenuCard key={item._id} item={item} />)
         )}
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     </div>
   );
 };

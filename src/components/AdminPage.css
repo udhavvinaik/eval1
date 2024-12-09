@@ -59,7 +59,7 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   }
   
-  /* Style for dish and order details */
+
   .menu-item h3, .order-card h3 {
     font-size: 18px;
     color: #333;
@@ -118,4 +118,6 @@
     background-color: #218838;
   }
   
-  
+.admin-page ul{
+  list-style-type: none;
+}
